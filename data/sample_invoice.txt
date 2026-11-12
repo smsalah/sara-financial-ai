@@ -1,0 +1,14 @@
+INVOICE NUMBER: INV-9942
+DATE: November 10, 2026
+VENDOR: Nexus Cloud Technologies LLC
+CLIENT: Zumzum Enterprise Solutions UK
+
+ITEMS:
+1. Enterprise Cloud Hosting (AWS/Azure Multi-Region Infrastructure) — $12,500.00
+2. Database Managed Services & PostgreSQL Tuning — $3,200.00
+3. Salesforce REST API Custom Middleware Connector — $4,800.00
+
+TOTAL AMOUNT DUE: $20,500.00
+PAYMENT TERMS: Net 30 days.
+LATE PAYMENT POLICY: A 2.5% penalty per month applies to payments exceeding 30 days from invoice date.
+REMITTANCE BANK: Global Finance Bank, Routing: 091000022, Account: 8839201920

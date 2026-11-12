@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+.env
+chroma_db/
+data/*.pdf
+!data/sample_invoice.txt
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
