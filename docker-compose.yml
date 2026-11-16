@@ -1,0 +1,25 @@
+services:
+  sara-financial-ai:
+    build: .
+    container_name: sara_financial_ai_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./checkpoints.sqlite:/app/checkpoints.sqlite
+      - ./exports:/app/exports
+      - ./data:/app/data
+    environment:
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+    restart: always
+
+  streamlit-ui:
+    build: .
+    container_name: sara_streamlit_ui
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://sara-financial-ai:8000
+    command: ["streamlit", "run", "src/interfaces/frontend.py", "--server.address=0.0.0.0", "--server.port=8501"]
+    depends_on:
+      - sara-financial-ai
+    restart: always
