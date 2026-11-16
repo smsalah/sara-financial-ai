@@ -1,12 +1,21 @@
+# Python / Build artifacts
 __pycache__/
 *.py[cod]
 *$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Environment and Virtualenvs
 venv/
-.venv/
 .env
-chroma_db/
-data/*.pdf
-!data/sample_invoice.txt
-.vscode/*
-!.vscode/settings.json
-!.vscode/launch.json
+
+# Local Database & Checkpoints
+checkpoints.sqlite
+data/erp_ledger.db
+
+# Exports & Logs
+exports/*
+!exports/.gitkeep
+logs/

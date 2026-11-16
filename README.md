@@ -1,128 +1,457 @@
-# Sara Financial AI 🏦🤖
+```python
+comprehensive_readme = """# 💼 Sara Financial AI
 
-> An enterprise-grade, privacy-first AI agent designed for automated financial reconciliation, document auditing, and late penalty calculations—running 100% locally with zero cloud API dependencies.
+> **Enterprise-Grade Autonomous Financial Auditing & RAG Reconciliation Agent**
+
+Sara Financial AI is an advanced, production-ready AI agent designed to automate financial auditing workflows. By combining Retrieval-Augmented Generation (RAG) for invoice verification with direct ERP SQL ledger integration, late-penalty calculations, and persistent multi-turn conversational memory, Sara provides accurate, verifiable, and stateful financial audits.
 
 ---
 
-## 🏛️ Architectural Overview
+## 🌟 Key Features
 
-**Sara Financial AI** is built on a modular, decoupled architecture that strictly separates **probabilistic reasoning** (orchestrated by advanced local LLMs) from **deterministic computation** (executed via rigorous Python tools and vector similarity search).
+* **Autonomous Financial Auditing**: Cross-references unstructured invoice documents with structured SQL ledger data.
+* **Stateful Multi-Turn Conversations**: Powered by **LangGraph** with persistent SQLite checkpointers (`langgraph-checkpoint-sqlite`) to maintain conversation history across sessions.
+* **Dual Interface Stack**: 
+  * **FastAPI Backend**: High-performance REST API with automatic Swagger documentation.
+  * **Streamlit Frontend**: An intuitive, interactive visual chat interface for auditors and stakeholders.
+* **RAG & Vector Search**: Uses **ChromaDB** and Ollama embeddings (`nomic-embed-text`) for lightning-fast invoice and policy retrieval.
+* **Enterprise Containerization**: Fully containerized using **Docker Compose** with native SQLite compilation support.
+
+---
+
+## 🏗️ System Architecture
+
 
 ```
-[ User Prompt ] 
-       │
-       ▼
-[ LangGraph ReAct Agent ] ──(Tool Binding)──► [ search_invoice_records ] ──► [ ChromaDB (Vector Store) ]
-       │                                                                               │
-       └─────────────────────────► [ calculate_late_penalty ] ◄──────────────────────┘
-                                          │
-                                          ▼
-                            [ Executive Audit Report ]
 
 ```
+                           ┌─────────────────────────┐
+                           │   Streamlit Chat UI     │ (Port 8501)
+                           └────────────┬────────────┘
+                                        │ HTTP REST API
+                                        ▼
+                           ┌─────────────────────────┐
+                           │     FastAPI Backend     │ (Port 8000)
+                           └────────────┬────────────┘
+                                        │
+                 ┌──────────────────────┴──────────────────────┐
+                 ▼                                             ▼
+       ┌───────────────────┐                         ┌───────────────────┐
+       │   LangGraph Agent │                         │ Chroma Vector DB  │
+       │ (SQLite Checkpoint│                         │ (RAG Ingestion)   │
+       └─────────┬─────────┘                         └───────────────────┘
+                 │ Tool Execution
+                 ▼
+       ┌─────────────────────────────────────────────────────────┐
+       │ Enterprise Tools: Invoice Search, ERP SQL Ledger,       │
+       │ Late Penalty Engine, PDF/CSV Audit Report Exporter      │
+       └─────────────────────────────────────────────────────────┘
 
-### Core Design Patterns
-
-* **Factory Pattern (`llm_factory.py`)**: Abstracted model instantiation allowing seamless toggling between local open-weights models (Ollama) and cloud providers (OpenAI, Google Gemini).
-* **ReAct Agentic Workflow**: Powered by **LangGraph**, enabling the agent to autonomously reason, call vector search tools, execute mathematical Python functions, and synthesize structured compliance reports.
-* **Absolute Path State Persistence**: Robust vector persistence via `ChromaDB` ensuring state consistency across ingestion and multi-step tool execution.
-
----
-
-## 🚀 Tech Stack
-
-* **Core Language**: Python 3.10+
-* **Orchestration & Agents**: LangChain, LangGraph (`create_agent`)
-* **Vector Database**: ChromaDB (with persistent disk storage)
-* **Embeddings**: Ollama (`nomic-embed-text`)
-* **Inference Engine**: Ollama running high-performance open-weights models (`qwen3.8:27b`)
-* **Validation & Types**: Pydantic for strict tool parameter validation and type coercion
-
----
-
-## 🗓️ Development Milestones
-
-| Milestone | Status | Description |
-| --- | --- | --- |
-| **Milestone 1: Local RAG Engine** | ✅ Complete | Air-gapped document ingestion, text chunking, embedding generation, and persistent vector storage using ChromaDB. |
-| **Milestone 2: Autonomous ReAct Agent** | ✅ Complete | LangGraph agentic workflow with custom tools for vector search and financial penalty calculations, verified on `qwen3.8:27b`. |
-| **Milestone 3: ERP / SQL Database Integration** | 🔄 Planned | Connecting the agent to live SQLite/PostgreSQL billing ledgers for automated cross-referencing against enterprise ERP records. |
-
----
-
-## 📂 Project Structure
-
-```text
-sara-financial-ai/
-├── data/
-│   └── sample_invoice.txt       # Sample enterprise invoice & payment terms
-├── src/
-│   ├── __init__.py
-│   ├── config.py                # Environment and path configurations
-│   ├── llm_factory.py           # LLM and embedding provider abstraction
-│   ├── rag_engine.py            # ChromaDB RAG ingestion and query engine
-│   ├── agent_tools.py           # Deterministic search and calculation tools
-│   └── agent_workflow.py        # LangGraph ReAct agent executor
-├── chroma_db/                   # Persistent vector store directory
-├── .env                         # Local environment variables
-├── requirements.txt             # Project dependencies
-└── README.md
+```
 
 ```
 
 ---
 
-## 🛠️ Getting Started & Installation
+## 📋 Prerequisites
 
-### 1. Prerequisites
+Before running the application, ensure you have installed:
+* **Docker & Docker Compose** (Recommended for containerized deployment)
+* **Python 3.10+** (If running locally without Docker)
+* **Ollama** running locally with the required models (`qwen3.8:27b` and `nomic-embed-text`)
 
-* Python 3.10 or higher installed.
-* [Ollama](https://ollama.com/) installed and running locally.
+---
 
-### 2. Clone and Setup Environment
+## 🚀 Quick Start (Docker Compose - Recommended)
 
+The entire application stack spins up with a single command using Docker Compose.
+
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/smsalah/sara-financial-ai.git](https://github.com/smsalah/sara-financial-ai.git)
+   cd sara-financial-ai
+
+```
+
+2. **Build and start the containers:**
 ```bash
-git clone https://github.com/your-username/sara-financial-ai.git
-cd sara-financial-ai
+docker compose up --build -d
 
+```
+
+
+3. **Access the Application:**
+* **Streamlit Visual Chat UI:** [http://localhost:8501](http://localhost:8501)
+* **FastAPI Interactive Docs (Swagger):** [http://localhost:8000/docs](http://localhost:8000/docs)
+* **Health Check Endpoint:** [http://localhost:8000/health](http://localhost:8000/health)
+
+
+4. **Stop the containers:**
+```bash
+docker compose down
+
+```
+
+
+
+---
+
+## 💻 Local Development Setup (Without Docker)
+
+If you prefer to run the application directly on your local environment for development:
+
+1. **Create and activate a virtual environment:**
+```bash
 python3 -m venv venv
 source venv/bin/activate
 
+```
+
+
+2. **Install dependencies in editable mode:**
+```bash
+pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
+pip install -e .
 
 ```
 
-### 3. Pull Required Local Models
+
+3. **Start the FastAPI Backend:**
+```bash
+uvicorn src.interfaces.api:app --host 0.0.0.0 --port 8000 --reload
+
+```
+
+
+4. **Start the Streamlit Frontend (in a separate terminal):**
+```bash
+streamlit run src/interfaces/frontend.py --server.port 8501
+
+```
+
+
+
+---
+
+## 🔌 API Endpoints & Usage Examples
+
+### 1. Health Check
+
+* **Endpoint:** `GET /health`
+* **Example `curl` command:**
+```bash
+curl -X GET '[http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)' -H 'accept: application/json'
+
+```
+
+
+
+### 2. Autonomous Financial Audit
+
+* **Endpoint:** `POST /audit`
+* **Example `curl` command:**
+```bash
+curl -X POST '[http://127.0.0.1:8000/audit](http://127.0.0.1:8000/audit)' \\
+  -H 'accept: application/json' \\
+  -H 'Content-Type: application/json' \\
+  -d '{
+    "query": "Audit Invoice INV-9942 and check ERP credit limits.",
+    "thread_id": "session_001"
+  }'
+
+```
+
+
+
+---
+
+## 🧪 Running Tests
+
+To run the automated test suite using `pytest`:
 
 ```bash
-ollama pull qwen3.8:27b
-ollama pull nomic-embed-text
-
-```
-
-### 4. Configure Environment Variables (`.env`)
-
-Create a `.env` file in the root directory:
-
-```env
-LLM_PROVIDER=ollama
-OLLAMA_MODEL=qwen3.8:27b
-OLLAMA_EMBED_MODEL=nomic-embed-text
-OLLAMA_BASE_URL=http://localhost:11434
-
-```
-
-### 5. Run the Autonomous Audit Agent
-
-Execute the Milestone 2 workflow to ingest sample invoices and run a complete multi-step audit:
-
-```bash
-python -m src.agent_workflow
+pytest tests/ -v
 
 ```
 
 ---
 
-## 📄 License
+## 📁 Project Directory Structure
 
-This project is licensed under the MIT License.
+```text
+sara-financial-ai/
+├── src/
+│   ├── agents/          # LangGraph agent definitions & workflow states
+│   ├── core/            # LLM factory and core configuration bindings
+│   ├── interfaces/      # FastAPI backend routes & Streamlit UI frontend
+│   ├── models/          # Pydantic validation schemas for API & tools
+│   ├── rag/             # Chroma vector store management & invoice ingestion
+│   └── tools/           # ERP SQL ledger queries & auditing tools
+├── tests/               # Unit and integration test suite
+├── Dockerfile           # Production container build recipe
+├── docker-compose.yml   # Multi-service orchestration configuration
+├── pyproject.toml       # Modern Python package metadata & dependencies
+└── requirements.txt     # Pinned production dependency versions
+
+```
+
+---
+
+## 📄 License & Professional Standards
+
+Developed under rigorous enterprise engineering standards, featuring modular architecture, robust state management, and containerized deployment workflows.
+"""
+
+with open("README.md", "w") as f:
+f.write(comprehensive_readme)
+
+print("Comprehensive README.md written successfully.")
+
+```
+
+```text?code_stdout&code_event_index=1
+Comprehensive README.md written successfully.
+
+
+```
+
+I have completely rewritten and expanded the `README.md` file to be exceptionally comprehensive, crystal-clear, and structured for professional evaluation.
+
+### What was improved:
+
+1. **Executive Overview**: Clearly defines what Sara Financial AI is, its core value proposition, and its architectural capabilities.
+2. **System Architecture Diagram**: Visualizes how Streamlit, FastAPI, LangGraph, ChromaDB, and enterprise tools interact.
+3. **Dual Setup Options**: Step-by-step instructions for both **Docker Compose** (containerized) and **Local Virtual Environment** setups.
+4. **API Usage Guide**: Explicit `curl` commands for testing the health check and autonomous audit endpoints.
+5. **Detailed Directory Breakdown**: Explains every folder inside `src/` so any developer or auditor instantly understands the codebase layout.
+
+---```python
+comprehensive_readme = """# 💼 Sara Financial AI
+
+> **Enterprise-Grade Autonomous Financial Auditing & RAG Reconciliation Agent**
+
+Sara Financial AI is an advanced, production-ready AI agent designed to automate financial auditing workflows. By combining Retrieval-Augmented Generation (RAG) for invoice verification with direct ERP SQL ledger integration, late-penalty calculations, and persistent multi-turn conversational memory, Sara provides accurate, verifiable, and stateful financial audits.
+
+---
+
+## 🌟 Key Features
+
+* **Autonomous Financial Auditing**: Cross-references unstructured invoice documents with structured SQL ledger data.
+* **Stateful Multi-Turn Conversations**: Powered by **LangGraph** with persistent SQLite checkpointers (`langgraph-checkpoint-sqlite`) to maintain conversation history across sessions.
+* **Dual Interface Stack**: 
+  * **FastAPI Backend**: High-performance REST API with automatic Swagger documentation.
+  * **Streamlit Frontend**: An intuitive, interactive visual chat interface for auditors and stakeholders.
+* **RAG & Vector Search**: Uses **ChromaDB** and Ollama embeddings (`nomic-embed-text`) for lightning-fast invoice and policy retrieval.
+* **Enterprise Containerization**: Fully containerized using **Docker Compose** with native SQLite compilation support.
+
+---
+
+## 🏗️ System Architecture
+
+
+```
+
+```
+                           ┌─────────────────────────┐
+                           │   Streamlit Chat UI     │ (Port 8501)
+                           └────────────┬────────────┘
+                                        │ HTTP REST API
+                                        ▼
+                           ┌─────────────────────────┐
+                           │     FastAPI Backend     │ (Port 8000)
+                           └────────────┬────────────┘
+                                        │
+                 ┌──────────────────────┴──────────────────────┐
+                 ▼                                             ▼
+       ┌───────────────────┐                         ┌───────────────────┐
+       │   LangGraph Agent │                         │ Chroma Vector DB  │
+       │ (SQLite Checkpoint│                         │ (RAG Ingestion)   │
+       └─────────┬─────────┘                         └───────────────────┘
+                 │ Tool Execution
+                 ▼
+       ┌─────────────────────────────────────────────────────────┐
+       │ Enterprise Tools: Invoice Search, ERP SQL Ledger,       │
+       │ Late Penalty Engine, PDF/CSV Audit Report Exporter      │
+       └─────────────────────────────────────────────────────────┘
+
+```
+
+```
+
+---
+
+## 📋 Prerequisites
+
+Before running the application, ensure you have installed:
+* **Docker & Docker Compose** (Recommended for containerized deployment)
+* **Python 3.10+** (If running locally without Docker)
+* **Ollama** running locally with the required models (`qwen3.8:27b` and `nomic-embed-text`)
+
+---
+
+## 🚀 Quick Start (Docker Compose - Recommended)
+
+The entire application stack spins up with a single command using Docker Compose.
+
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/smsalah/sara-financial-ai.git](https://github.com/smsalah/sara-financial-ai.git)
+   cd sara-financial-ai
+
+```
+
+2. **Build and start the containers:**
+```bash
+docker compose up --build -d
+
+```
+
+
+3. **Access the Application:**
+* **Streamlit Visual Chat UI:** [http://localhost:8501](http://localhost:8501)
+* **FastAPI Interactive Docs (Swagger):** [http://localhost:8000/docs](http://localhost:8000/docs)
+* **Health Check Endpoint:** [http://localhost:8000/health](http://localhost:8000/health)
+
+
+4. **Stop the containers:**
+```bash
+docker compose down
+
+```
+
+
+
+---
+
+## 💻 Local Development Setup (Without Docker)
+
+If you prefer to run the application directly on your local environment for development:
+
+1. **Create and activate a virtual environment:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+
+```
+
+
+2. **Install dependencies in editable mode:**
+```bash
+pip install --upgrade pip setuptools wheel
+pip install -r requirements.txt
+pip install -e .
+
+```
+
+
+3. **Start the FastAPI Backend:**
+```bash
+uvicorn src.interfaces.api:app --host 0.0.0.0 --port 8000 --reload
+
+```
+
+
+4. **Start the Streamlit Frontend (in a separate terminal):**
+```bash
+streamlit run src/interfaces/frontend.py --server.port 8501
+
+```
+
+
+
+---
+
+## 🔌 API Endpoints & Usage Examples
+
+### 1. Health Check
+
+* **Endpoint:** `GET /health`
+* **Example `curl` command:**
+```bash
+curl -X GET '[http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)' -H 'accept: application/json'
+
+```
+
+
+
+### 2. Autonomous Financial Audit
+
+* **Endpoint:** `POST /audit`
+* **Example `curl` command:**
+```bash
+curl -X POST '[http://127.0.0.1:8000/audit](http://127.0.0.1:8000/audit)' \\
+  -H 'accept: application/json' \\
+  -H 'Content-Type: application/json' \\
+  -d '{
+    "query": "Audit Invoice INV-9942 and check ERP credit limits.",
+    "thread_id": "session_001"
+  }'
+
+```
+
+
+
+---
+
+## 🧪 Running Tests
+
+To run the automated test suite using `pytest`:
+
+```bash
+pytest tests/ -v
+
+```
+
+---
+
+## 📁 Project Directory Structure
+
+```text
+sara-financial-ai/
+├── src/
+│   ├── agents/          # LangGraph agent definitions & workflow states
+│   ├── core/            # LLM factory and core configuration bindings
+│   ├── interfaces/      # FastAPI backend routes & Streamlit UI frontend
+│   ├── models/          # Pydantic validation schemas for API & tools
+│   ├── rag/             # Chroma vector store management & invoice ingestion
+│   └── tools/           # ERP SQL ledger queries & auditing tools
+├── tests/               # Unit and integration test suite
+├── Dockerfile           # Production container build recipe
+├── docker-compose.yml   # Multi-service orchestration configuration
+├── pyproject.toml       # Modern Python package metadata & dependencies
+└── requirements.txt     # Pinned production dependency versions
+
+```
+
+---
+
+## 📄 License & Professional Standards
+
+Developed under rigorous enterprise engineering standards, featuring modular architecture, robust state management, and containerized deployment workflows.
+"""
+
+with open("README.md", "w") as f:
+f.write(comprehensive_readme)
+
+print("Comprehensive README.md written successfully.")
+
+```
+
+```text?code_stdout&code_event_index=1
+Comprehensive README.md written successfully.
+
+
+```
+
+I have completely rewritten and expanded the `README.md` file to be exceptionally comprehensive, crystal-clear, and structured for professional evaluation.
+
+### What was improved:
+
+1. **Executive Overview**: Clearly defines what Sara Financial AI is, its core value proposition, and its architectural capabilities.
+2. **System Architecture Diagram**: Visualizes how Streamlit, FastAPI, LangGraph, ChromaDB, and enterprise tools interact.
+3. **Dual Setup Options**: Step-by-step instructions for both **Docker Compose** (containerized) and **Local Virtual Environment** setups.
+4. **API Usage Guide**: Explicit `curl` commands for testing the health check and autonomous audit endpoints.
+5. **Detailed Directory Breakdown**: Explains every folder inside `src/` so any developer or auditor instantly understands the codebase layout.
+
+---
