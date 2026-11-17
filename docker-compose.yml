@@ -5,11 +5,16 @@ services:
     ports:
       - "8000:8000"
     volumes:
+      - ./src:/app/src
       - ./checkpoints.sqlite:/app/checkpoints.sqlite
       - ./exports:/app/exports
       - ./data:/app/data
+    env_file:
+      - .env
     environment:
       - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - OLLAMA_MODEL=qwen3.8:27b
+    command: ["uvicorn", "src.interfaces.api:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--reload-dir", "/app/src"]
     restart: always
 
   streamlit-ui:
@@ -17,6 +22,8 @@ services:
     container_name: sara_streamlit_ui
     ports:
       - "8501:8501"
+    volumes:
+      - ./src:/app/src
     environment:
       - API_URL=http://sara-financial-ai:8000
     command: ["streamlit", "run", "src/interfaces/frontend.py", "--server.address=0.0.0.0", "--server.port=8501"]
