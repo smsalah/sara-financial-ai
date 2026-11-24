@@ -19,3 +19,5 @@ data/erp_ledger.db
 exports/*
 !exports/.gitkeep
 logs/
+.coverage
+chroma_db/
