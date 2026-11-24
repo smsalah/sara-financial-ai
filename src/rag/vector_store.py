@@ -4,6 +4,7 @@ from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from src.core.llm_factory import get_embeddings
 
+
 class RAGEngine:
     def __init__(self, persist_directory: str = None):
         if persist_directory is None:
@@ -13,14 +14,15 @@ class RAGEngine:
         self.persist_directory = persist_directory
         self.embeddings = get_embeddings()
         self.vector_store = Chroma(
-            persist_directory=self.persist_directory,
-            embedding_function=self.embeddings
+            persist_directory=self.persist_directory, embedding_function=self.embeddings
         )
 
-    def ingest_document(self, file_path: str, vendor: str = "Nexus Cloud Technologies LLC"):
+    def ingest_document(
+        self, file_path: str, vendor: str = "Nexus Cloud Technologies LLC"
+    ):
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"Document not found at {file_path}")
-        
+
         with open(file_path, "r", encoding="utf-8") as f:
             text = f.read()
 
@@ -29,8 +31,12 @@ class RAGEngine:
 
         documents = [
             Document(
-                page_content=chunk, 
-                metadata={"vendor": vendor, "source": os.path.basename(file_path), "chunk_id": i}
+                page_content=chunk,
+                metadata={
+                    "vendor": vendor,
+                    "source": os.path.basename(file_path),
+                    "chunk_id": i,
+                },
             )
             for i, chunk in enumerate(chunks)
         ]

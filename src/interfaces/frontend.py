@@ -26,7 +26,7 @@ if prompt := st.chat_input("Ask about invoices, credit limits, or audit reports.
             try:
                 response = requests.post(
                     "http://sara-financial-ai:8000/audit",
-                    json={"query": prompt, "thread_id": "streamlit_user_session"}
+                    json={"query": prompt, "thread_id": "streamlit_user_session"},
                 )
                 if response.status_code == 200:
                     data = response.json()
@@ -34,7 +34,11 @@ if prompt := st.chat_input("Ask about invoices, credit limits, or audit reports.
                 else:
                     agent_reply = f"Error: Received status code {response.status_code}"
             except Exception as e:
-                agent_reply = f"Connection error: Could not reach FastAPI backend. ({str(e)})"
-            
+                agent_reply = (
+                    f"Connection error: Could not reach FastAPI backend. ({str(e)})"
+                )
+
             st.markdown(agent_reply)
-            st.session_state.messages.append({"role": "assistant", "content": agent_reply})
+            st.session_state.messages.append(
+                {"role": "assistant", "content": agent_reply}
+            )
